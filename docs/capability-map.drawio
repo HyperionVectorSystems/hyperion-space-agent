@@ -1,0 +1,217 @@
+<mxfile host="">
+  <diagram name="Capability map" id="cap1">
+    <mxGraphModel dx="1600" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1640" pageHeight="840" math="0" shadow="0" defaultFontFamily="Plus Jakarta Sans">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Voice-driven SDA toolchain — capability map (green/violet = this repo provides; amber/bronze = you fetch)" style="text;html=1;align=left;verticalAlign=middle;fontFamily=Plus Jakarta Sans;fontSize=16;fontStyle=1;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1400" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_hub" value="BROWSER HUB — this repo (+ Cesium / Aladin via CDN)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=13;fontStyle=1;align=left;verticalAlign=top;fillColor=#F8F8F6;strokeColor=#C8CED8;strokeWidth=1;fontColor=#5A6577;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="340" height="580" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_orch" value="ORCHESTRATOR :8703 — this repo" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=13;fontStyle=1;align=left;verticalAlign=top;fillColor=#F8F8F6;strokeColor=#C8CED8;strokeWidth=1;fontColor=#5A6577;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="450" y="90" width="300" height="580" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_tools" value="TOOL ADAPTERS — interface contract (this repo)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=13;fontStyle=1;align=left;verticalAlign=top;fillColor=#F8F8F6;strokeColor=#C8CED8;strokeWidth=1;fontColor=#5A6577;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="820" y="90" width="290" height="580" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_ext" value="FETCH — OSS tools + model + data" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=13;fontStyle=1;align=left;verticalAlign=top;fillColor=#F8F8F6;strokeColor=#C8CED8;strokeWidth=1;fontColor=#5A6577;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="90" width="340" height="580" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_chat" value="Chat + push-to-talk&#10;(left half)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#E0F2F1;strokeColor=#0A7B83;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="70" y="140" width="280" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_artifact" value="Artifact pane&#10;table / chart / zoom" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#E0F2F1;strokeColor=#0A7B83;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="70" y="240" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_cesium" value="Cesium globe pane" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#E0F2F1;strokeColor=#0A7B83;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="70" y="330" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_fits" value="Sky / FITS pane (Aladin)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#E0F2F1;strokeColor=#0A7B83;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="70" y="420" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_audio" value="Mic + speaker  [Audio I/O]" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#E0F2F1;strokeColor=#0A7B83;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="70" y="560" width="280" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_api" value="Endpoints&#10;/chat/send (text)&#10;/voice-turn (WAV)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#B8E0C8;strokeColor=#2D5A3D;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="480" y="140" width="240" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_viz" value="Viz + images&#10;/viz/czml, /viz/files&#10;/data (served OEM/FITS)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#B8E0C8;strokeColor=#2D5A3D;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="480" y="290" width="240" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="o_core" value="route -&gt; dispatch -&gt; ground&#10;(two-pass loop)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#B8E0C8;strokeColor=#2D5A3D;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="480" y="440" width="240" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_contract" value="contract.py&#10;schema / run / render" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#D4C0F0;strokeColor=#6B5B95;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="845" y="140" width="240" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_gmat" value="GMAT adapter" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#D4C0F0;strokeColor=#6B5B95;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="845" y="240" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_satsim" value="SatSim adapter" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#D4C0F0;strokeColor=#6B5B95;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="845" y="320" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_satnet" value="SatNet overlay adapter" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#D4C0F0;strokeColor=#6B5B95;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="845" y="400" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_det" value="example detector (stub)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#D4C0F0;strokeColor=#6B5B95;strokeWidth=2;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="845" y="480" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_model" value="Model server&#10;llama-server / Ollama + GGUF" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#FFE4A3;strokeColor=#B8920F;strokeWidth=2;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="140" width="280" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_gmat" value="GMAT headless" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#FFE4A3;strokeColor=#B8920F;strokeWidth=2;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="240" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_satsim" value="SatSim" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#FFE4A3;strokeColor=#B8920F;strokeWidth=2;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="310" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_stt" value="whisper.cpp (STT)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#FFE4A3;strokeColor=#B8920F;strokeWidth=2;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="380" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_tts" value="Piper (TTS)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#FFE4A3;strokeColor=#B8920F;strokeWidth=2;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="450" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="d_data" value="Data store&#10;OEM / CZML, FITS, SatNet annotations" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=12;fillColor=#E0C8A8;strokeColor=#8B5A2B;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="530" width="280" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg" value="Legend" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=13;fontStyle=1;align=left;verticalAlign=top;fillColor=#F5F5F3;strokeColor=#8390A6;strokeWidth=1;fontColor=#2D3033;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="690" width="1480" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg1" value="HMI / browser hub" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=11;fillColor=#E0F2F1;strokeColor=#0A7B83;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="60" y="725" width="220" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg2" value="Orchestrator (this repo)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=11;fillColor=#B8E0C8;strokeColor=#2D5A3D;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="300" y="725" width="220" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg3" value="Tool adapters / contract (this repo)" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=11;fillColor=#D4C0F0;strokeColor=#6B5B95;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="540" y="725" width="260" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg4" value="Fetched OSS tool / model (dashed = external)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fontFamily=Plus Jakarta Sans;fontSize=11;fillColor=#FFE4A3;strokeColor=#B8920F;strokeWidth=2;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="820" y="725" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg5" value="Data store" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Plus Jakarta Sans;fontSize=11;fillColor=#E0C8A8;strokeColor=#8B5A2B;strokeWidth=3;fontColor=#2D3033;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="725" width="160" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="lgnote" value="Solid = request / invoke (with payload label).  Dashed line = response / return leg.  Colour carries the layer; only non-obvious payloads are labelled." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#8390A6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="765" width="1440" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="POST /chat/send {text}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#2D5A3D;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#2D5A3D;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" source="h_chat" target="o_api" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="reply {text, artifact}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;dashed=1;strokeColor=#2D5A3D;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#2D5A3D;labelBackgroundColor=#F5F5F3;exitX=0;exitY=0.65;entryX=1;entryY=0.65;" edge="1" source="o_api" target="h_chat" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="POST /voice-turn {WAV}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#2D5A3D;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#2D5A3D;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" edge="1" source="h_audio" target="o_api" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="415" y="600"/>
+              <mxPoint x="415" y="255"/>
+              <mxPoint x="600" y="255"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" value="spoken {WAV}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;dashed=1;strokeColor=#2D5A3D;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#2D5A3D;labelBackgroundColor=#F5F5F3;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" source="o_api" target="h_audio" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="620"/>
+              <mxPoint x="390" y="620"/>
+              <mxPoint x="390" y="600"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" value="GET /viz/czml" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#2D5A3D;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#2D5A3D;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.4;entryX=0;entryY=0.4;" edge="1" source="h_cesium" target="o_viz" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" value="CZML" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;dashed=1;strokeColor=#2D5A3D;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#2D5A3D;labelBackgroundColor=#F5F5F3;exitX=0;exitY=0.6;entryX=1;entryY=0.6;" edge="1" source="o_viz" target="h_cesium" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="GET /data (FITS/OEM)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#2D5A3D;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#2D5A3D;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.5;entryX=0;entryY=0.85;" edge="1" source="h_fits" target="o_viz" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="455"/>
+              <mxPoint x="410" y="366"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" value="turn" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#2D5A3D;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#2D5A3D;labelBackgroundColor=#F5F5F3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" source="o_api" target="o_core" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e13" value="dispatch(tool, args)  &#8596;  result + artifact" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#6B5B95;strokeWidth=2.5;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#6B5B95;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.5;entryX=0;entryY=0.9;" edge="1" source="o_core" target="t_contract" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="790" y="495"/>
+              <mxPoint x="790" y="175"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" value="/v1/chat/completions  &#8596;  routing + grounded text" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#B8920F;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#B8920F;labelBackgroundColor=#F5F5F3;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" source="o_core" target="e_model" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="650"/>
+              <mxPoint x="1560" y="650"/>
+              <mxPoint x="1560" y="175"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" value="WAV &#8594; text" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#B8920F;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#B8920F;labelBackgroundColor=#F5F5F3;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" source="o_core" target="e_stt" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="662"/>
+              <mxPoint x="1548" y="662"/>
+              <mxPoint x="1548" y="405"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11b" value="text &#8594; WAV" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#B8920F;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#B8920F;labelBackgroundColor=#F5F5F3;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" edge="1" source="o_core" target="e_tts" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="630" y="674"/>
+              <mxPoint x="1536" y="674"/>
+              <mxPoint x="1536" y="475"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" value="propagate &#8594; OEM" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#B8920F;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#B8920F;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="t_gmat" target="e_gmat" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e16" value="generate scene + truth" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#B8920F;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#B8920F;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="t_satsim" target="e_satsim" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e17" value="write OEM" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#8B5A2B;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#8B5A2B;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.7;entryX=0;entryY=0.2;" edge="1" source="t_gmat" target="d_data" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1150" y="285"/>
+              <mxPoint x="1150" y="548"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" value="annotations" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#8B5A2B;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#8B5A2B;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="t_satnet" target="d_data" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1165" y="430"/>
+              <mxPoint x="1165" y="565"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e20" value="detection marks" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;strokeColor=#8B5A2B;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#8B5A2B;labelBackgroundColor=#F5F5F3;exitX=1;exitY=0.5;entryX=0;entryY=0.8;" edge="1" source="t_det" target="d_data" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1180" y="510"/>
+              <mxPoint x="1180" y="602"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" value="read newest OEM &#8594; CZML" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jumpStyle=arc;jumpSize=6;dashed=1;strokeColor=#8B5A2B;strokeWidth=2;fontFamily=Plus Jakarta Sans;fontSize=11;fontColor=#8B5A2B;labelBackgroundColor=#F5F5F3;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" source="o_viz" target="d_data" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="690"/>
+              <mxPoint x="1350" y="690"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

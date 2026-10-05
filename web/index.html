@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Voice-driven SDA toolchain</title>
+<!-- Cesium 1.132 and Aladin Lite v3 load from their CDNs in the browser; the
+     server ships only HTML + JSON + generated data. For a fully offline demo,
+     vendor these two into web/ and repoint the tags below. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.132/Build/Cesium/Widgets/widgets.css"/>
+<script src="https://cdn.jsdelivr.net/npm/cesium@1.132/Build/Cesium/Cesium.js"></script>
+<script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
+<style>
+  :root { --bg:#0e1116; --panel:#161b22; --line:#2b333f; --ink:#e6edf3; --mut:#8b98a5; --accent:#3b82f6; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+              font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  #grid { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+          gap:8px; height:100vh; padding:8px; }
+  .pane { background:var(--panel); border:1px solid var(--line); border-radius:10px;
+          overflow:hidden; position:relative; display:flex; flex-direction:column; }
+  #chat { grid-row:1 / span 2; }
+  .pane h2 { margin:0; padding:8px 12px; font-size:13px; color:var(--mut);
+             border-bottom:1px solid var(--line); display:flex; justify-content:space-between; }
+  .expand { cursor:pointer; color:var(--mut); font-size:12px; background:none; border:0; }
+  #log { flex:1; overflow:auto; padding:12px; font-size:14px; line-height:1.45; }
+  .msg { margin:0 0 10px; } .msg.user { color:var(--ink); } .msg.bot { color:#a6e3c0; }
+  #inputrow { display:flex; gap:8px; padding:8px; border-top:1px solid var(--line); }
+  #text { flex:1; background:#0e1116; color:var(--ink); border:1px solid var(--line);
+          border-radius:8px; padding:8px 10px; font-size:14px; }
+  button.act { background:var(--accent); color:#fff; border:0; border-radius:8px;
+               padding:8px 12px; cursor:pointer; font-size:14px; }
+  #ptt.rec { background:#c0392b; }
+  #cesiumRoot { position:absolute; inset:34px 0 0 0; }
+  /* Aladin now lives INSIDE the artifact pane; it fills its wrapper (#artifactSky),
+     which sits below the artifact table content and only shows for image results. */
+  #artifactSky { flex:1; position:relative; min-height:240px; }
+  #fitsRoot { position:absolute; inset:0; }
+  .empty { color:var(--mut); padding:12px; font-size:13px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  td,th { border-bottom:1px solid var(--line); padding:4px 8px; text-align:left; }
+</style>
+</head>
+<body>
+<div id="grid">
+  <section class="pane" id="chat">
+    <h2>Conversation <span id="status" class="expand">ready</span></h2>
+    <div id="log"><div class="empty">Ask about an orbit, a scene, or a detection. Try "propagate the ISS for one orbit."</div></div>
+    <div id="inputrow">
+      <button class="act" id="ptt" title="push to talk">Hold to talk</button>
+      <input id="text" placeholder="type a question and press Enter"/>
+      <button class="act" id="send">Send</button>
+    </div>
+  </section>
+
+  <section class="pane" id="artifact">
+    <h2>Artifact <button class="expand" data-full="artifact">expand</button></h2>
+    <div id="artifactBody"><div class="empty">Tool results (tables, numbers) appear here.</div></div>
+    <!-- Sky/FITS (Aladin) renders here, in the artifact pane, only for image results.
+         Toggled by visibility (not innerHTML) so the Aladin instance survives. -->
+    <div id="artifactSky" style="display:none"><div id="fitsRoot"></div></div>
+  </section>
+
+  <section class="pane" id="cesium">
+    <h2>Globe <span><button class="expand" id="clearGlobe">clear</button> &nbsp;<button class="expand" data-full="cesium">expand</button></span></h2>
+    <div id="cesiumRoot"></div>
+  </section>
+</div>
+
+<script>
+const log = document.getElementById('log');
+const statusEl = document.getElementById('status');
+function add(kind, text) {
+  const d = document.createElement('div'); d.className = 'msg ' + kind;
+  d.textContent = (kind === 'user' ? 'you: ' : '') + text;
+  log.appendChild(d); log.scrollTop = log.scrollHeight;
+}
+
+async function sendText(text) {
+  add('user', text); statusEl.textContent = 'thinking...';
+  try {
+    const r = await fetch('/chat/send', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: text})});
+    const j = await r.json();
+    add('bot', j.response || j.message || '(no answer)');
+    if (j.artifact) renderArtifact(j.artifact);
+  } catch (e) { add('bot', 'error: ' + e); }
+  statusEl.textContent = 'ready';
+}
+
+function renderTable(rows, title) {
+  if (!rows || !rows.length) return '';
+  const th = '<tr>' + rows[0].map(c => '<th style="text-align:left;border-bottom:1px solid #555;padding:2px 8px">'+c+'</th>').join('') + '</tr>';
+  const tb = rows.slice(1).map(r => '<tr>' + r.map(c => '<td style="padding:2px 8px;border-bottom:1px solid #2a2a2a">'+c+'</td>').join('') + '</tr>').join('');
+  return (title ? '<div style="font-weight:600;margin:2px 0 6px">'+title+'</div>' : '')
+       + '<table style="border-collapse:collapse;width:100%;font-size:12px">' + th + tb + '</table>';
+}
+function renderArtifact(a) {
+  const body = document.getElementById('artifactBody');
+  // Default: hide the in-pane sky view. The image branch re-reveals it (via showFits),
+  // the overlay branch keeps it (it draws on the frame already shown). Everything else
+  // — tables, viz, a globe clear — shows table content in the pane, no sky.
+  document.getElementById('artifactSky').style.display = 'none';
+  if (a.kind === 'table' && a.rows) {
+    body.innerHTML = renderTable(a.rows, a.title);
+  } else if (a.kind === 'viz') {
+    statusEl.textContent = 'orbit updated';               // globe poller picks it up
+    if (a.tables) {                                        // list of {title, rows}; [] clears the pane
+      body.innerHTML = (a.title ? '<div style="font-weight:600;margin:2px 0 8px">'+a.title+'</div>' : '')
+        + a.tables.map(t => renderTable(t.rows, t.title)).join('<div style="height:10px"></div>');
+    } else if (a.table) {                                 // back-compat: single table
+      body.innerHTML = renderTable(a.table, a.title);
+    }
+  } else if (a.kind === 'image') {
+    showFits(a.fits, a.overlay);
+  } else if (a.kind === 'overlay') {
+    document.getElementById('artifactSky').style.display = 'block';   // marks draw on the shown frame
+    drawMarks(a.marks, a.color, a.label);
+  } else if (a.kind === 'chart') {
+    body.innerHTML = '<div class="empty">chart artifact (wire your chart lib here)</div>';
+  } else {
+    body.innerHTML = '<pre class="empty">' + JSON.stringify(a, null, 1) + '</pre>';
+  }
+}
+
+// --- input wiring ---
+document.getElementById('send').onclick = () => {
+  const t = document.getElementById('text'); if (t.value.trim()) { sendText(t.value.trim()); t.value=''; }
+};
+document.getElementById('text').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('send').click();
+});
+
+// --- push-to-talk: record while held, POST WAV to /voice-turn ---
+let mediaRec, chunks = [], micStream = null;
+const ptt = document.getElementById('ptt');
+async function startRec() {
+  try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('getUserMedia unavailable — open the hub over https or http://localhost');
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    micStream = stream; chunks = [];
+    mediaRec = new MediaRecorder(stream);
+    mediaRec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    mediaRec.onstop = async () => {
+      if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
+      const blob = new Blob(chunks, {type: (mediaRec && mediaRec.mimeType) || 'audio/webm'});
+      if (!blob.size) { statusEl.textContent = 'ready'; add('bot', 'no audio captured (mic produced 0 bytes)'); return; }
+      statusEl.textContent = 'transcribing...';
+      try {
+        const r = await fetch('/voice-turn', {method:'POST', body: blob});
+        const j = await r.json();
+        if (j.heard) add('user', j.heard);
+        add('bot', j.response || j.message || '(no answer)');
+        if (j.artifact) renderArtifact(j.artifact);
+        if (j.audio) new Audio('data:audio/wav;base64,' + j.audio).play();
+      } catch (e) { add('bot', 'voice-turn error: ' + e); }
+      statusEl.textContent = 'ready';
+    };
+    mediaRec.start(); ptt.classList.add('rec'); ptt.textContent = 'Release to send';
+    statusEl.textContent = 'recording…';
+  } catch (e) {
+    statusEl.textContent = 'mic blocked';
+    add('bot', 'microphone error: ' + (e.name ? e.name + ' — ' : '') + e.message);
+  }
+}
+function stopRec() {
+  if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
+  ptt.classList.remove('rec'); ptt.textContent = 'Hold to talk';
+}
+ptt.addEventListener('mousedown', startRec); ptt.addEventListener('mouseup', stopRec);
+ptt.addEventListener('touchstart', e => { e.preventDefault(); startRec(); });
+ptt.addEventListener('touchend', e => { e.preventDefault(); stopRec(); });
+
+// --- Cesium globe: init once, poll /viz/files, reload CZML on change ---
+let viewer = null, lastHead = null;
+function ensureViewer() {
+  if (viewer) return;
+  document.getElementById('cesiumRoot').innerHTML = '';
+  viewer = new Cesium.Viewer('cesiumRoot', {
+    // Token-free base imagery: Cesium's bundled Natural Earth II tiles. Avoids
+    // the Cesium ion access token the default World Imagery requires (without a
+    // token the globe renders as a black, untextured sphere). Swap in
+    // Cesium.ImageryLayer.fromWorldImagery + Cesium.Ion.defaultAccessToken for
+    // higher-res satellite imagery if you have an ion token.
+    baseLayer: Cesium.ImageryLayer.fromProviderAsync(
+      Cesium.TileMapServiceImageryProvider.fromUrl(
+        Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
+      )
+    ),
+    animation:false, timeline:false, baseLayerPicker:false, geocoder:false,
+    homeButton:false, sceneModePicker:false, navigationHelpButton:false,
+  });
+}
+async function loadGlobe() {
+  ensureViewer();
+  try {
+    const ds = await Cesium.CzmlDataSource.load('/viz/czml');
+    viewer.dataSources.removeAll();
+    viewer.dataSources.add(ds);
+    if (ds.entities.values.length) viewer.flyTo(ds);   // skip on an empty (cleared) globe
+  } catch (e) { statusEl.textContent = 'globe load error'; }
+}
+async function pollViz() {
+  try {
+    const r = await fetch('/viz/files', {cache:'no-store'});
+    const j = await r.json();
+    // head encodes the whole set (count + newest), so adding an object OR a
+    // clear changes it and triggers a reload of the merged multi-satellite CZML.
+    const head = (j.count||0) + '|' + (j.files && j.files.length ? j.files[0].name + '|' + j.files[0].modified : 'empty');
+    if (head !== lastHead) { lastHead = head; loadGlobe(); }
+  } catch (e) { /* transient */ }
+}
+ensureViewer();            // show the globe immediately (empty until an orbit lands)
+setInterval(pollViz, 3000);
+
+document.getElementById('clearGlobe').onclick = async () => {
+  await fetch('/viz/clear', {method:'POST'});
+  lastHead = null;         // force the next poll to reload (to empty)
+  loadGlobe();
+};
+
+// --- Aladin FITS/sky pane ---
+let aladin = null;
+function showFits(fitsUrl, overlayUrl) {
+  document.getElementById('artifactSky').style.display = 'block';   // reveal the in-pane sky view
+  // Draw the overlay once Aladin is live. Two overlay shapes are understood:
+  //  - observer view: {center, fov_deg, targets:[{name, ra, dec, range_km}]} — real
+  //    sky coordinates, plotted as catalog sources and centered/zoomed to frame them.
+  //  - SatNet truth:  {objects:[{x_center, y_center, class_name}]} — pixel coords,
+  //    shown as a count (a pixel->RA/Dec map needs the frame WCS).
+  const drawOverlay = () => {
+    if (!overlayUrl) return;
+    fetch(overlayUrl, {cache:'no-store'}).then(r => r.json()).then(a => {
+      if (a.targets) {
+        if (a.center && typeof aladin.gotoRaDec === 'function') {
+          aladin.gotoRaDec(a.center.ra, a.center.dec);
+          if (a.fov_deg) aladin.setFoV(a.fov_deg);
+        }
+        drawMarks(a.targets.map(t => ({ra:t.ra, dec:t.dec, name:t.name, range_km:t.range_km})),
+                  'cyan', 'targets');
+      } else {
+        drawMarks((a.objects||[]).map(o => ({x:o.x_center, y:o.y_center, class:o.class_name})),
+                  'green', 'truth');
+      }
+    }).catch(()=>{});
+  };
+  if (!aladin && window.A) {
+    A.init.then(() => {
+      aladin = A.aladin('#fitsRoot', {survey:'P/DSS2/color', fov:1.5, showLayersControl:false});
+      if (fitsUrl) aladin.displayFITS(fitsUrl);
+      drawOverlay();                       // draw only after Aladin is initialized
+    });
+  } else if (aladin) {
+    if (fitsUrl) aladin.displayFITS(fitsUrl);
+    drawOverlay();
+  }
+}
+function drawMarks(marks, color, label) {
+  if (!aladin || !marks || !marks.length) return;
+  const cat = A.catalog({name: label||'marks', sourceSize: 14, color: color||'cyan', shape:'circle'});
+  aladin.addCatalog(cat);
+  const sky = marks.filter(m => m.ra !== undefined && m.dec !== undefined);
+  if (sky.length) {                        // real RA/Dec: plot each as a catalog source
+    cat.addSources(sky.map(m => A.source(m.ra, m.dec, {name: m.name || ''})));
+    const rows = [['Target','RA (deg)','Dec (deg)','Range (km)']].concat(
+      sky.map(m => [m.name||'', (+m.ra).toFixed(4), (+m.dec).toFixed(4),
+                    m.range_km!=null ? Math.round(m.range_km) : '']));
+    document.getElementById('artifactBody').innerHTML =
+      '<div style="font-weight:600;margin:2px 0 6px">'+(label||'marks')+'</div>' + renderTable(rows);
+  } else {                                 // legacy pixel marks: no frame WCS here
+    document.getElementById('artifactBody').innerHTML =
+      '<div class="empty">' + marks.length + ' ' + (label||'marks') + ' (pixel coords; open the FITS WCS to map to RA/Dec)</div>';
+  }
+}
+
+// --- expand a pane to full screen ---
+document.querySelectorAll('.expand[data-full]').forEach(b => {
+  b.onclick = () => document.getElementById(b.dataset.full).requestFullscreen?.();
+});
+</script>
+</body>
+</html>

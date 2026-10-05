@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "title": "Voice-driven SDA toolchain",
+    "subtitle": "One machine (Mac / PC / Linux). The operator is the human above, reachable only through the UI. One UI layer of four surfaces; one reentrant router. Hover a box to light its channels.",
+    "stamp": "canonical source of truth · docs/architecture-spec.json · render is a projection",
+    "viewBox": "0 0 1440 1060"
+  },
+  "classes": {
+    "ui":     {"fill": "var(--teal-f)",  "stroke": "var(--teal-s)"},
+    "hub":    {"fill": "var(--amber-f)", "stroke": "var(--amber-s)", "sw": 3.5},
+    "model":  {"fill": "var(--blue-f)",  "stroke": "var(--blue-s)",  "dashed": true},
+    "tool":   {"fill": "var(--coral-f)", "stroke": "var(--coral-s)"},
+    "data":   {"fill": "var(--green-f)", "stroke": "var(--green-s)"},
+    "tbd":    {"fill": "var(--amber-f)", "stroke": "var(--amber-s)", "dashed": true},
+    "trans":  {"fill": "var(--teal-f)",  "stroke": "var(--teal-s)",  "dashed": true},
+    "human":  {"fill": "var(--steel-f)", "stroke": "var(--steel-s)"}
+  },
+  "operatorBand": {"x": 50, "y": 16, "w": 1340, "h": 30, "label": "OPERATOR (human) · above all · interacts ONLY through the four UI surfaces below"},
+  "uiLayer": {"x": 50, "y": 52, "w": 1340, "h": 150, "label": "USER INTERFACE — one layer (four surfaces)"},
+  "nodes": [
+    {"id": "ui_voice",  "cls": "ui",   "x": 90,   "y": 92,  "w": 250, "h": 92, "t": "Voice",            "lines": ["record in · audio back out"]},
+    {"id": "ui_chat",   "cls": "ui",   "x": 380,  "y": 92,  "w": 250, "h": 92, "t": "Chat (primary)",   "lines": ["text in · chat out"]},
+    {"id": "ui_artifact","cls": "ui",  "x": 780,  "y": 92,  "w": 250, "h": 92, "t": "Artifact display", "lines": ["table · chart · graph · FITS"]},
+    {"id": "ui_cesium", "cls": "ui",   "x": 1070, "y": 92,  "w": 250, "h": 92, "t": "Cesium display",   "lines": ["globe · CZML"]},
+
+    {"id": "stt",       "cls": "trans","x": 150,  "y": 250, "w": 150, "h": 48, "t": "speech→text", "lines": ["fetch"]},
+    {"id": "tts",       "cls": "trans","x": 360,  "y": 250, "w": 150, "h": 48, "t": "text→audio", "lines": ["fetch"]},
+
+    {"id": "router",    "cls": "hub",  "x": 600,  "y": 480, "w": 280, "h": 160, "t": "Router / orchestrator",
+      "lines": [":8703 · reentrant", "one closed-set of routes", "fed by input, LLM out, tool out"]},
+
+    {"id": "embed_rag", "cls": "data", "x": 110,  "y": 470, "w": 230, "h": 66, "t": "embed + RAG retrieve", "lines": ["non-tool path"]},
+    {"id": "ragstore",  "cls": "data", "x": 110,  "y": 560, "w": 230, "h": 58, "t": "vector store", "lines": ["knowledge_chunks"]},
+    {"id": "llm",       "cls": "model","x": 110,  "y": 650, "w": 230, "h": 96, "t": "LLM", "lines": ["llama.cpp / Ollama · fetch", "Qwen3-8B (+ swaps / remote)"]},
+
+    {"id": "tool",      "cls": "tool", "x": 1090, "y": 400, "w": 250, "h": 120, "t": "Tools · one contract", "lines": ["GMAT commands", "SatSim commands", "Cesium commands", "FITS viewer · SatNet overlay"]},
+    {"id": "artifact_chain","cls":"tbd","x":1090, "y": 600, "w": 250, "h": 96, "t": "Artifact-build chain", "lines": ["TBD · assemble tool outputs", "→ the two display surfaces"]}
+  ],
+  "channels": [
+    {"dn": "ui_chat,router",   "kind": "gold", "d": "M470,184 V450 H690 V480", "arrow": "g", "lx": 700, "ly": 442, "label": "text in", "anchor": "start"},
+    {"dn": "router,ui_chat",   "kind": "gold", "d": "M800,480 V236 H540 V184", "arrow": "g", "lx": 590, "ly": 250, "label": "text answer / uncertainty", "anchor": "start"},
+    {"dn": "ui_voice,stt",     "kind": "voice","d": "M215,184 V216 H225 V250", "arrow": "c", "lx": 250, "ly": 210, "label": "mic WAV", "anchor": "start"},
+    {"dn": "stt,router",       "kind": "voice","d": "M300,274 H560 V520 H600", "arrow": "c", "lx": 372, "ly": 266, "label": "→ unified text", "anchor": "start"},
+    {"dn": "router,tts",       "kind": "voice","d": "M660,480 V330 H435 V298", "arrow": "c", "lx": 470, "ly": 344, "label": "answer text", "anchor": "start"},
+    {"dn": "tts,ui_voice",     "kind": "voice","d": "M400,250 V212 H215 V184", "arrow": "c", "lx": 250, "ly": 236, "label": "audio out", "anchor": "start"},
+
+    {"dn": "router,embed_rag", "kind": "gold", "d": "M600,545 H470 V503 H340", "arrow": "g", "lx": 388, "ly": 478, "label": "gate 1: non-tool → embed+RAG", "anchor": "middle"},
+    {"dn": "embed_rag,ragstore","kind":"soft", "d": "M225,536 V560", "arrow": "s", "lx": 250, "ly": 552, "label": "retrieve", "anchor": "start"},
+    {"dn": "embed_rag,llm",    "kind": "gold", "d": "M110,503 H78 V698 H110", "arrow": "g", "lx": 60, "ly": 610, "label": "context + input", "anchor": "middle", "rot": true},
+    {"dn": "llm,router",       "kind": "gold", "d": "M340,698 H470 V600 H600", "arrow": "g", "lx": 430, "ly": 690, "label": "LLM output", "anchor": "start"},
+
+    {"dn": "router,tool",      "kind": "gold", "d": "M880,520 V460 H1090", "arrow": "g", "lx": 955, "ly": 446, "label": "gate 1/2: command → tool", "anchor": "middle"},
+    {"dn": "tool,router",      "kind": "soft", "d": "M1090,490 H930 V600 H880", "arrow": "s", "lx": 980, "ly": 560, "label": "result (loop 3)", "anchor": "middle"},
+
+    {"dn": "router,artifact_chain","kind":"gold","d": "M880,615 V648 H1090", "arrow": "g", "lx": 955, "ly": 636, "label": "gate 2: artifact-build", "anchor": "middle"},
+    {"dn": "artifact_chain,ui_artifact","kind":"gold","d": "M1340,630 H1392 V300 H905 V184", "arrow": "g", "lx": 1010, "ly": 296, "label": "FITS · overlay · chart", "anchor": "start"},
+    {"dn": "artifact_chain,ui_cesium","kind":"gold","d": "M1340,662 H1410 V320 H1195 V184", "arrow": "g", "lx": 1230, "ly": 340, "label": "CZML · cesium cmds", "anchor": "start"}
+  ],
+  "gates": [
+    {"t": "Gate 1 — parse input (closed set)", "lines": ["tool-command → tool", "else → embed → RAG retrieve → (context+input) → LLM → router"]},
+    {"t": "Gate 2 — route LLM output (closed set)", "lines": ["text → user · command → tool", "artifact-build (TBD) → displays", "uncertainty → text render → chat / speech"]},
+    {"t": "Loop 3 — LLM-initiated tool call (reentrant)", "lines": ["tool output re-enters the router, then either:", "a) RAG → LLM → router → text render → chat/speech", "b) direct → artifact-build → display"]}
+  ],
+  "toolCommands": [
+    {"t": "Tool commands · router dispatches", "lines": [
+      "GMAT: propagate · maneuver · eclipse · transform",
+      "SatSim: generate scene + SatNet truth",
+      "Cesium: add/remove object · camera · timeline",
+      "FITS viewer: load · zoom · scale",
+      "SatNet overlay: draw truth / detection marks"
+    ]}
+  ],
+  "legend": [
+    {"cls": "hub",   "t": "Router / orchestrator (hub)"},
+    {"cls": "ui",    "t": "UI surfaces + transducers"},
+    {"cls": "model", "t": "LLM / inference"},
+    {"cls": "tool",  "t": "Tools + commands"},
+    {"cls": "data",  "t": "RAG / vector store"}
+  ]
+}

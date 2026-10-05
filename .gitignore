@@ -1,0 +1,13 @@
+# harness runtime, never committed
+.venv/
+.env
+logs/
+data/
+models/
+/tools/
+__pycache__/
+*.pyc
+
+# macOS junk (Finder metadata, AppleDouble sidecars)
+.DS_Store
+._*

@@ -1,0 +1,17 @@
+# Orchestrator runtime deps (the harness). The SDA tools (GMAT, SatSim) and the
+# model are fetched/built separately by build.sh, not pip-installed here. SatSim
+# gets its OWN venv (TensorFlow); see scripts/fetch_tools.sh.
+# System dep (not pip): the voice loop needs `ffmpeg` on PATH to transcode
+# browser mic audio (webm/opus) to the 16 kHz mono WAV whisper requires.
+# Install via your OS package manager (apt install ffmpeg / brew install ffmpeg).
+fastapi>=0.110
+uvicorn[standard]>=0.29
+requests>=2.31
+# Propagation baseline (named objects via SGP4; two-body needs no extra dep):
+sgp4>=2.23
+# Example detector (FITS read + threshold):
+numpy>=1.26
+astropy>=6.0
+# Model pull (scripts/pull_model.sh) — provides the `hf` CLI (the old
+# `huggingface-cli` was removed in hub 2.0; the `[cli]` extra no longer exists):
+huggingface_hub>=0.34

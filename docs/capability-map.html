@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice-driven SDA toolchain — capability map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F5F3;--container:#F8F8F6;--carbon:#2D3033;--slate:#8390A6;
+    --blue-f:#C5D5FF;--blue-s:#3B5BDB;--green-f:#B8E0C8;--green-s:#2D5A3D;
+    --amber-f:#FFE4A3;--amber-s:#B8920F;--coral-f:#FFCAB0;--coral-s:#C45A10;
+    --teal-f:#A8DDE0;--teal-s:#0A7B83;--steel-f:#C8CED8;--steel-s:#5A6577;
+    --serif:'Instrument Serif',Georgia,serif;--sans:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;
+    --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--carbon);font-family:var(--sans)}
+  header{max-width:1480px;margin:0 auto;padding:32px 24px 6px}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(28px,3.4vw,40px)}
+  .sub{color:var(--slate);font-size:14px;max-width:940px;margin-top:6px}
+  .stamp{font-family:var(--mono);font-size:11px;color:var(--slate);margin-top:8px}
+  #wrap{max-width:1480px;margin:0 auto;padding:6px 12px 30px}
+  svg{width:100%;height:auto;display:block}
+  .uilayer{fill:none;stroke:var(--teal-s);stroke-width:1.4;stroke-dasharray:2 4;opacity:.8}
+  .uilab{font-family:var(--mono);font-size:12px;fill:var(--teal-s);letter-spacing:.08em}
+  .opband{fill:var(--steel-f);stroke:var(--steel-s);stroke-width:1}
+  .oblab{font-family:var(--mono);font-size:12px;fill:var(--carbon);letter-spacing:.05em;font-weight:600}
+  .node rect{cursor:pointer} .node text{pointer-events:none}
+  .nt{font-family:var(--sans);font-weight:700;font-size:15px;fill:var(--carbon)}
+  .ns{font-family:var(--sans);font-size:11.5px;fill:var(--carbon);opacity:.78}
+  .edge{fill:none;stroke:var(--slate);stroke-width:1.8}
+  .edge.soft{stroke-dasharray:6 5;opacity:.72}
+  .edge.gold{stroke:var(--amber-s);stroke-width:2.4}
+  .edge.voice{stroke:var(--coral-s);stroke-width:2}
+  .elabel{font-family:var(--mono);font-size:11px;fill:var(--slate)}
+  .elabel.gold{fill:var(--amber-s);font-weight:600} .elabel.voice{fill:var(--coral-s)}
+  .panel{fill:var(--container);stroke:var(--slate);stroke-width:1}
+  .pt{font-family:var(--sans);font-weight:700;font-size:13px;fill:var(--carbon)}
+  .pl{font-family:var(--mono);font-size:11px;fill:var(--carbon)}
+  .dim{opacity:.12;transition:opacity .18s} .lit rect{stroke-width:4}
+  figcaption{max-width:1480px;margin:0 auto;padding:4px 24px 40px;font-size:12.5px;font-style:italic;color:var(--slate)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Voice-driven SDA toolchain</h1>
+  <div class="sub">One machine (Mac / PC / Linux). The operator is the human above, reachable only through the UI. One UI layer of four surfaces; one reentrant router. Hover a box to light its channels.</div>
+  <div class="stamp">canonical source of truth · docs/architecture-spec.json · render is a projection</div>
+</header>
+<div id="wrap">
+<svg viewBox="0 0 1440 1060" xmlns="http://www.w3.org/2000/svg" id="map">
+  <defs>
+    <marker id="a-g" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto"><polygon points="0 0,9 3.2,0 6.4" fill="#B8920F"/></marker>
+    <marker id="a-s" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto"><polygon points="0 0,9 3.2,0 6.4" fill="#8390A6"/></marker>
+    <marker id="a-c" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto"><polygon points="0 0,9 3.2,0 6.4" fill="#C45A10"/></marker>
+  </defs>
+  <rect class="opband" x="50" y="16" width="1340" height="30" rx="8"/>
+  <text class="oblab" x="66" y="36">OPERATOR (human) · above all · interacts ONLY through the four UI surfaces below</text>
+  <rect class="uilayer" x="50" y="52" width="1340" height="150" rx="12"/>
+  <text class="uilab" x="66" y="76">USER INTERFACE — one layer (four surfaces)</text>
+  <g id="edges">
+<path class="edge gold" data-n="ui_chat,router" d="M470,184 V450 H690 V480" marker-end="url(#a-g)"/>
+<path class="edge gold" data-n="router,ui_chat" d="M800,480 V236 H540 V184" marker-end="url(#a-g)"/>
+<path class="edge voice" data-n="ui_voice,stt" d="M215,184 V216 H225 V250" marker-end="url(#a-c)"/>
+<path class="edge voice" data-n="stt,router" d="M300,274 H560 V520 H600" marker-end="url(#a-c)"/>
+<path class="edge voice" data-n="router,tts" d="M660,480 V330 H435 V298" marker-end="url(#a-c)"/>
+<path class="edge voice" data-n="tts,ui_voice" d="M400,250 V212 H215 V184" marker-end="url(#a-c)"/>
+<path class="edge gold" data-n="router,embed_rag" d="M600,545 H470 V503 H340" marker-end="url(#a-g)"/>
+<path class="edge soft" data-n="embed_rag,ragstore" d="M225,536 V560" marker-end="url(#a-s)"/>
+<path class="edge gold" data-n="embed_rag,llm" d="M110,503 H78 V698 H110" marker-end="url(#a-g)"/>
+<path class="edge gold" data-n="llm,router" d="M340,698 H470 V600 H600" marker-end="url(#a-g)"/>
+<path class="edge gold" data-n="router,tool" d="M880,520 V460 H1090" marker-end="url(#a-g)"/>
+<path class="edge soft" data-n="tool,router" d="M1090,490 H930 V600 H880" marker-end="url(#a-s)"/>
+<path class="edge gold" data-n="router,artifact_chain" d="M880,615 V648 H1090" marker-end="url(#a-g)"/>
+<path class="edge gold" data-n="artifact_chain,ui_artifact" d="M1340,630 H1392 V300 H905 V184" marker-end="url(#a-g)"/>
+<path class="edge gold" data-n="artifact_chain,ui_cesium" d="M1340,662 H1410 V320 H1195 V184" marker-end="url(#a-g)"/>
+  </g>
+<text class="elabel gold" x="700" y="442" text-anchor="start">text in</text>
+<text class="elabel gold" x="590" y="250" text-anchor="start">text answer / uncertainty</text>
+<text class="elabel voice" x="250" y="210" text-anchor="start">mic WAV</text>
+<text class="elabel voice" x="372" y="266" text-anchor="start">→ unified text</text>
+<text class="elabel voice" x="470" y="344" text-anchor="start">answer text</text>
+<text class="elabel voice" x="250" y="236" text-anchor="start">audio out</text>
+<text class="elabel gold" x="388" y="478" text-anchor="middle">gate 1: non-tool → embed+RAG</text>
+<text class="elabel" x="250" y="552" text-anchor="start">retrieve</text>
+<text class="elabel gold" x="60" y="610" text-anchor="middle" transform="rotate(-90 60 610)">context + input</text>
+<text class="elabel gold" x="430" y="690" text-anchor="start">LLM output</text>
+<text class="elabel gold" x="955" y="446" text-anchor="middle">gate 1/2: command → tool</text>
+<text class="elabel" x="980" y="560" text-anchor="middle">result (loop 3)</text>
+<text class="elabel gold" x="955" y="636" text-anchor="middle">gate 2: artifact-build</text>
+<text class="elabel gold" x="1010" y="296" text-anchor="start">FITS · overlay · chart</text>
+<text class="elabel gold" x="1230" y="340" text-anchor="start">CZML · cesium cmds</text>
+<g class="node" id="ui_voice">
+<rect x="90" y="92" width="250" height="92" rx="8" fill="var(--teal-f)" stroke="var(--teal-s)" stroke-width="2.5"/>
+<text class="nt" x="215.0" y="118" text-anchor="middle">Voice</text>
+<text class="ns" x="215.0" y="137" text-anchor="middle">record in · audio back out</text>
+</g>
+<g class="node" id="ui_chat">
+<rect x="380" y="92" width="250" height="92" rx="8" fill="var(--teal-f)" stroke="var(--teal-s)" stroke-width="2.5"/>
+<text class="nt" x="505.0" y="118" text-anchor="middle">Chat (primary)</text>
+<text class="ns" x="505.0" y="137" text-anchor="middle">text in · chat out</text>
+</g>
+<g class="node" id="ui_artifact">
+<rect x="780" y="92" width="250" height="92" rx="8" fill="var(--teal-f)" stroke="var(--teal-s)" stroke-width="2.5"/>
+<text class="nt" x="905.0" y="118" text-anchor="middle">Artifact display</text>
+<text class="ns" x="905.0" y="137" text-anchor="middle">table · chart · graph · FITS</text>
+</g>
+<g class="node" id="ui_cesium">
+<rect x="1070" y="92" width="250" height="92" rx="8" fill="var(--teal-f)" stroke="var(--teal-s)" stroke-width="2.5"/>
+<text class="nt" x="1195.0" y="118" text-anchor="middle">Cesium display</text>
+<text class="ns" x="1195.0" y="137" text-anchor="middle">globe · CZML</text>
+</g>
+<g class="node" id="stt">
+<rect x="150" y="250" width="150" height="48" rx="8" fill="var(--teal-f)" stroke="var(--teal-s)" stroke-width="2.5" stroke-dasharray="7 5"/>
+<text class="nt" x="225.0" y="276" text-anchor="middle">speech→text</text>
+<text class="ns" x="225.0" y="295" text-anchor="middle">fetch</text>
+</g>
+<g class="node" id="tts">
+<rect x="360" y="250" width="150" height="48" rx="8" fill="var(--teal-f)" stroke="var(--teal-s)" stroke-width="2.5" stroke-dasharray="7 5"/>
+<text class="nt" x="435.0" y="276" text-anchor="middle">text→audio</text>
+<text class="ns" x="435.0" y="295" text-anchor="middle">fetch</text>
+</g>
+<g class="node" id="router">
+<rect x="600" y="480" width="280" height="160" rx="8" fill="var(--amber-f)" stroke="var(--amber-s)" stroke-width="3.5"/>
+<text class="nt" x="740.0" y="506" text-anchor="middle">Router / orchestrator</text>
+<text class="ns" x="740.0" y="525" text-anchor="middle">:8703 · reentrant</text>
+<text class="ns" x="740.0" y="542" text-anchor="middle">one closed-set of routes</text>
+<text class="ns" x="740.0" y="559" text-anchor="middle">fed by input, LLM out, tool out</text>
+</g>
+<g class="node" id="embed_rag">
+<rect x="110" y="470" width="230" height="66" rx="8" fill="var(--green-f)" stroke="var(--green-s)" stroke-width="2.5"/>
+<text class="nt" x="225.0" y="496" text-anchor="middle">embed + RAG retrieve</text>
+<text class="ns" x="225.0" y="515" text-anchor="middle">non-tool path</text>
+</g>
+<g class="node" id="ragstore">
+<rect x="110" y="560" width="230" height="58" rx="8" fill="var(--green-f)" stroke="var(--green-s)" stroke-width="2.5"/>
+<text class="nt" x="225.0" y="586" text-anchor="middle">vector store</text>
+<text class="ns" x="225.0" y="605" text-anchor="middle">knowledge_chunks</text>
+</g>
+<g class="node" id="llm">
+<rect x="110" y="650" width="230" height="96" rx="8" fill="var(--blue-f)" stroke="var(--blue-s)" stroke-width="2.5" stroke-dasharray="7 5"/>
+<text class="nt" x="225.0" y="676" text-anchor="middle">LLM</text>
+<text class="ns" x="225.0" y="695" text-anchor="middle">llama.cpp / Ollama · fetch</text>
+<text class="ns" x="225.0" y="712" text-anchor="middle">Qwen3-8B (+ swaps / remote)</text>
+</g>
+<g class="node" id="tool">
+<rect x="1090" y="400" width="250" height="120" rx="8" fill="var(--coral-f)" stroke="var(--coral-s)" stroke-width="2.5"/>
+<text class="nt" x="1215.0" y="426" text-anchor="middle">Tools · one contract</text>
+<text class="ns" x="1215.0" y="445" text-anchor="middle">GMAT commands</text>
+<text class="ns" x="1215.0" y="462" text-anchor="middle">SatSim commands</text>
+<text class="ns" x="1215.0" y="479" text-anchor="middle">Cesium commands</text>
+<text class="ns" x="1215.0" y="496" text-anchor="middle">FITS viewer · SatNet overlay</text>
+</g>
+<g class="node" id="artifact_chain">
+<rect x="1090" y="600" width="250" height="96" rx="8" fill="var(--amber-f)" stroke="var(--amber-s)" stroke-width="2.5" stroke-dasharray="7 5"/>
+<text class="nt" x="1215.0" y="626" text-anchor="middle">Artifact-build chain</text>
+<text class="ns" x="1215.0" y="645" text-anchor="middle">TBD · assemble tool outputs</text>
+<text class="ns" x="1215.0" y="662" text-anchor="middle">→ the two display surfaces</text>
+</g>
+<rect class="panel" x="50" y="760" width="500" height="70" rx="8"/>
+<text class="pt" x="66" y="784">Gate 1 — parse input (closed set)</text>
+<text class="pl" x="66" y="804">tool-command → tool</text>
+<text class="pl" x="66" y="822">else → embed → RAG retrieve → (context+input) → LLM → router</text>
+<rect class="panel" x="50" y="842" width="500" height="88" rx="8"/>
+<text class="pt" x="66" y="866">Gate 2 — route LLM output (closed set)</text>
+<text class="pl" x="66" y="886">text → user · command → tool</text>
+<text class="pl" x="66" y="904">artifact-build (TBD) → displays</text>
+<text class="pl" x="66" y="922">uncertainty → text render → chat / speech</text>
+<rect class="panel" x="50" y="942" width="500" height="88" rx="8"/>
+<text class="pt" x="66" y="966">Loop 3 — LLM-initiated tool call (reentrant)</text>
+<text class="pl" x="66" y="986">tool output re-enters the router, then either:</text>
+<text class="pl" x="66" y="1004">a) RAG → LLM → router → text render → chat/speech</text>
+<text class="pl" x="66" y="1022">b) direct → artifact-build → display</text>
+<rect class="panel" x="580" y="760" width="370" height="124" rx="8"/>
+<text class="pt" x="596" y="784">Tool commands · router dispatches</text>
+<text class="pl" x="596" y="804">GMAT: propagate · maneuver · eclipse · transform</text>
+<text class="pl" x="596" y="822">SatSim: generate scene + SatNet truth</text>
+<text class="pl" x="596" y="840">Cesium: add/remove object · camera · timeline</text>
+<text class="pl" x="596" y="858">FITS viewer: load · zoom · scale</text>
+<text class="pl" x="596" y="876">SatNet overlay: draw truth / detection marks</text>
+<rect class="panel" x="970" y="760" width="450" height="162" rx="8"/>
+<text class="pt" x="986" y="784">Legend</text>
+<rect x="986" y="791" width="16" height="12" fill="var(--amber-f)" stroke="var(--amber-s)" stroke-width="1.5"/>
+<text class="pl" x="1010" y="802">Router / orchestrator (hub)</text>
+<rect x="986" y="813" width="16" height="12" fill="var(--teal-f)" stroke="var(--teal-s)" stroke-width="1.5"/>
+<text class="pl" x="1010" y="824">UI surfaces + transducers</text>
+<rect x="986" y="835" width="16" height="12" fill="var(--blue-f)" stroke="var(--blue-s)" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text class="pl" x="1010" y="846">LLM / inference</text>
+<rect x="986" y="857" width="16" height="12" fill="var(--coral-f)" stroke="var(--coral-s)" stroke-width="1.5"/>
+<text class="pl" x="1010" y="868">Tools + commands</text>
+<rect x="986" y="879" width="16" height="12" fill="var(--green-f)" stroke="var(--green-s)" stroke-width="1.5"/>
+<text class="pl" x="1010" y="890">RAG / vector store</text>
+<text class="pl" x="986" y="914" style="font-style:italic;fill:var(--slate)">dashed = you fetch / optional · hover a box to light its channels</text>
+</svg>
+</div>
+<figcaption>Figure: the voice-driven SDA harness, projected from docs/architecture-spec.json. One UI layer of four surfaces feeds one reentrant router; inputs unify to text; gate 1 splits tool-command from the embed-RAG-LLM path; gate 2 routes the LLM output to user, tool, artifact-build, or the operator; loop 3 returns a tool call's output to the router. Hover any box to isolate its channels.</figcaption>
+<script>
+const nodes=[...document.querySelectorAll('.node')];
+const edges=[...document.querySelectorAll('.edge')];
+function reset(){nodes.forEach(n=>n.classList.remove('dim','lit'));edges.forEach(e=>e.classList.remove('dim'));}
+nodes.forEach(n=>{
+  n.addEventListener('mouseenter',()=>{
+    const id=n.id,nbr=new Set([id]);
+    edges.forEach(e=>{const m=(e.dataset.n||'').split(',');if(m.includes(id))m.forEach(x=>nbr.add(x));});
+    nodes.forEach(o=>o.classList.toggle('dim',!nbr.has(o.id)));
+    n.classList.add('lit');
+    edges.forEach(e=>e.classList.toggle('dim',!(e.dataset.n||'').split(',').includes(id)));
+  });
+  n.addEventListener('mouseleave',reset);
+});
+</script>
+</body>
+</html>
